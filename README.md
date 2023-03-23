@@ -1,6 +1,6 @@
 # threejs-boilerplate-vite
 
-## 🌎 how to run the project
+## 🌎 Setup
 
 clone the project then install the packages
 
