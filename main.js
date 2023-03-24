@@ -13,7 +13,8 @@ import terrainVertexShader from "./shaders/vertex.glsl"
 
 // Debug
 const gui = new dat.GUI();
-
+const guiDummy = {}
+guiDummy.clearColor = '#080024'
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
@@ -88,6 +89,11 @@ gui.add(terrain.texture,'smallLineWidth').min(0).max(0.1).step(0.0001).name('sma
 gui.add(terrain.texture,'smallLineAlpha').min(0).max(1).step(0.0001).name('smallLineAlpha').onChange(()=>{
   terrain.texture.update()
 }) 
+
+gui.addColor(guiDummy,'clearColor').name('clearColor').onChange(()=>{
+  renderer.setClearColor(guiDummy.clearColor,1)
+}) 
+
 //Geometry
 terrain.geometry = new THREE.PlaneGeometry(1,1,1000,1000);
 terrain.geometry.rotateX(-Math.PI*0.5)
@@ -96,10 +102,15 @@ terrain.material = new THREE.ShaderMaterial({
   vertexShader:terrainVertexShader,
   fragmentShader:terrainFragmentShader,
   uniforms:{
-    uTexture:{value:terrain.texture.instance}
+    uTexture:{value:terrain.texture.instance},
+    uElevation:{value:0.825},
+    uTime:{value:0}
   }
 });
 
+gui.add(terrain.material.uniforms.uElevation,'value').min(0).max(10).step(0.001).name('uElevation').onChange(()=>{
+  terrain.texture.update()
+}) 
 terrain.mesh = new THREE.Mesh(terrain.geometry,terrain.material);
 terrain.mesh.scale.set(10,10,10)
 
@@ -136,6 +147,8 @@ window.addEventListener("resize", () => {
   effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   //update passes 
+  // bokehPass.renderTargetDepth.width = sizes.width * Math.min(window.devicePixelRatio, 2)
+  // bokehPass.renderTargetDepth.height = sizes.height * Math.min(window.devicePixelRatio, 2)
  
 });
 
@@ -149,9 +162,8 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(5, 3, 5);
+camera.position.set(2.8, 0.2, 3);
 scene.add(camera);
-
 // Controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
@@ -170,7 +182,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 renderer.outputEncoding = THREE.sRGBEncoding
 renderer.toneMapping = THREE.ACESFilmicToneMapping
-
+renderer.setClearColor('#0f0822')
 // Effect Composer
 
 const renderTarget = new THREE.WebGLMultipleRenderTargets(800,600,{
@@ -186,13 +198,18 @@ effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 effectComposer.addPass(new RenderPass(scene,camera))
 
 const bokehPass = new BokehPass( scene, camera, {
-  focus: 1.0,
-  aperture: 0.025,
-  maxblur: 0.01
+  focus: 0.4859,
+  aperture: 0.00395,
+  maxblur: 0.0029,
+
 } );
 effectComposer.addPass(bokehPass)
+
 let bokehFolder = gui.addFolder('bokehPass');
-bokehFolder.add
+ bokehFolder.add(bokehPass.materialBokeh.uniforms.focus,'value').name('focus').min(0).max(10).step(0.0001)
+ bokehFolder.add(bokehPass.materialBokeh.uniforms.aperture,'value').name('aperture').min(0.0002).max(0.1).step(0.00001)
+ bokehFolder.add(bokehPass.materialBokeh.uniforms.maxblur,'value').name('maxblur').min(0).max(0.02).step(0.00001)
+ bokehFolder.add(bokehPass,'enabled').name('enabled')
 /**
  * Animate
  */
@@ -204,6 +221,8 @@ const tick = () => {
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
 
+  terrain.material.uniforms.uTime.value = elapsedTime
+  console.log(camera.position);
   // Update controls
   controls.update()
  
