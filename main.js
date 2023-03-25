@@ -4,7 +4,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass';
+import { BokehPass } from './passes/bokehPass';
 import terrainFragmentShader from "./shaders/fragment.glsl"
 import terrainVertexShader from "./shaders/vertex.glsl"
 /**
@@ -111,7 +111,17 @@ terrain.material = new THREE.ShaderMaterial({
 gui.add(terrain.material.uniforms.uElevation,'value').min(0).max(10).step(0.001).name('uElevation').onChange(()=>{
   terrain.texture.update()
 }) 
-terrain.mesh = new THREE.Mesh(terrain.geometry,terrain.material);
+
+/*
+
+ depth Material
+ 
+*/
+terrain.depthMaterial = new THREE.MeshDepthMaterial()
+terrain.depthMaterial.depthPacking = THREE.RGBADepthPacking
+terrain.depthMaterial.blending = THREE.NoBlending
+
+terrain.mesh = new THREE.Mesh(terrain.geometry,terrain.depthMaterial);
 terrain.mesh.scale.set(10,10,10)
 
 scene.add(terrain.mesh);
