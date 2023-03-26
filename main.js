@@ -7,6 +7,8 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { BokehPass } from './passes/bokehPass';
 import terrainFragmentShader from "./shaders/fragment.glsl"
 import terrainVertexShader from "./shaders/vertex.glsl"
+import terrainDepthVertexShader from "./shaders/terrainDepth/vertex.glsl"
+import terrainDepthFragmentShader from "./shaders/terrainDepth/fragment.glsl"
 /**
  * Base
  */
@@ -93,19 +95,24 @@ gui.add(terrain.texture,'smallLineAlpha').min(0).max(1).step(0.0001).name('small
 gui.addColor(guiDummy,'clearColor').name('clearColor').onChange(()=>{
   renderer.setClearColor(guiDummy.clearColor,1)
 }) 
+ 
+
 
 //Geometry
 terrain.geometry = new THREE.PlaneGeometry(1,1,1000,1000);
 terrain.geometry.rotateX(-Math.PI*0.5)
+
+/* Uniforms */
+terrain.uniforms = {
+  uTexture:{value:terrain.texture.instance},
+    uElevation:{value:0.825},
+    uTime:{value:0}
+}
 terrain.material = new THREE.ShaderMaterial({
   transparent:true,
   vertexShader:terrainVertexShader,
   fragmentShader:terrainFragmentShader,
-  uniforms:{
-    uTexture:{value:terrain.texture.instance},
-    uElevation:{value:0.825},
-    uTime:{value:0}
-  }
+  uniforms:terrain.uniforms
 });
 
 gui.add(terrain.material.uniforms.uElevation,'value').min(0).max(10).step(0.001).name('uElevation').onChange(()=>{
@@ -117,7 +124,15 @@ gui.add(terrain.material.uniforms.uElevation,'value').min(0).max(10).step(0.001)
  depth Material
  
 */
-terrain.depthMaterial = new THREE.MeshDepthMaterial()
+const uniforms = THREE.UniformsUtils.merge([
+  THREE.UniformsLib.common,
+  THREE.UniformsLib.displacementmap
+])
+terrain.depthMaterial = new THREE.ShaderMaterial({
+  uniforms:uniforms,
+  vertexShader:terrainDepthVertexShader,
+  fragmentShader:terrainDepthFragmentShader
+})
 terrain.depthMaterial.depthPacking = THREE.RGBADepthPacking
 terrain.depthMaterial.blending = THREE.NoBlending
 
@@ -232,7 +247,7 @@ const tick = () => {
   previousTime = elapsedTime;
 
   terrain.material.uniforms.uTime.value = elapsedTime
-  console.log(camera.position);
+  // console.log(camera.position);
   // Update controls
   controls.update()
  
