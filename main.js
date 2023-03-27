@@ -126,7 +126,8 @@ gui.add(terrain.material.uniforms.uElevation,'value').min(0).max(10).step(0.001)
 */
 const uniforms = THREE.UniformsUtils.merge([
   THREE.UniformsLib.common,
-  THREE.UniformsLib.displacementmap
+  THREE.UniformsLib.displacementmap,
+  terrain.uniforms
 ])
 terrain.depthMaterial = new THREE.ShaderMaterial({
   uniforms:uniforms,

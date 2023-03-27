@@ -5,12 +5,13 @@
 #include <skinning_pars_vertex>
 #include <logdepthbuf_pars_vertex>
 #include <clipping_planes_pars_vertex>
-
+#include ../partials/getElevation
 // This is used for computing an equivalent of gl_FragCoord.z that is as high precision as possible.
 // Some platforms compute gl_FragCoord at a lower precision which makes the manually computed value better for
 // depth-based postprocessing effects. Reproduced on iPad with A10 processor / iPadOS 13.3.1.
 varying vec2 vHighPrecisionZW;
-
+varying float vElevation;
+uniform float uTime;
 void main() {
 
 	#include <uv_vertex>
@@ -38,6 +39,10 @@ void main() {
     #endif
 
     vec4 mPosition = modelMatrix * position;
+
+	/* Elevation */
+	float elevation = getElevation(mPosition.xz + vec2(uTime * 0.03,uTime * 0.01));
+	mPosition.y += elevation;
 
     vec4 mvPosition = viewMatrix * mPosition;
 
