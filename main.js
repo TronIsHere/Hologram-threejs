@@ -127,8 +127,11 @@ gui.add(terrain.material.uniforms.uElevation,'value').min(0).max(10).step(0.001)
 const uniforms = THREE.UniformsUtils.merge([
   THREE.UniformsLib.common,
   THREE.UniformsLib.displacementmap,
-  terrain.uniforms
+
 ])
+for(const uniformKey in terrain.uniforms){
+  uniforms[uniformKey] = terrain.uniforms[uniformKey]
+}
 terrain.depthMaterial = new THREE.ShaderMaterial({
   uniforms:uniforms,
   vertexShader:terrainDepthVertexShader,
@@ -137,9 +140,9 @@ terrain.depthMaterial = new THREE.ShaderMaterial({
 terrain.depthMaterial.depthPacking = THREE.RGBADepthPacking
 terrain.depthMaterial.blending = THREE.NoBlending
 
-terrain.mesh = new THREE.Mesh(terrain.geometry,terrain.depthMaterial);
+terrain.mesh = new THREE.Mesh(terrain.geometry,terrain.material);
 terrain.mesh.scale.set(10,10,10)
-
+terrain.mesh.userData.depthMaterial = terrain.depthMaterial
 scene.add(terrain.mesh);
 
 
@@ -247,7 +250,7 @@ const tick = () => {
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
 
-  terrain.material.uniforms.uTime.value = elapsedTime
+  terrain.uniforms.uTime.value = elapsedTime
   // console.log(camera.position);
   // Update controls
   controls.update()

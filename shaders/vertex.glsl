@@ -1,7 +1,7 @@
 #include partials/getElevation
 
 varying float vElevation;
-uniform float uElevation;
+// uniform float uElevation;
 uniform float uTime;
 
 
