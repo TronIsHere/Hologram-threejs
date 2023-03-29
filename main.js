@@ -32,7 +32,7 @@ const terrain = {};
 //Texture
 terrain.texture = {};
 terrain.texture.linesCount = 5;
-terrain.texture.bigLineWidth = 0.04;
+terrain.texture.bigLineWidth = 0.08;
 terrain.texture.smallLineWidth = 0.01;
 terrain.texture.smallLineAlpha = 1;
 terrain.texture.width = 32;
@@ -66,6 +66,7 @@ terrain.texture.update = ()=>
   const smallLinesCount = terrain.texture.linesCount - 1;
 
   for (let i = 0; i < smallLinesCount; i++) {
+    terrain.texture.context.fillStyle = '#00ffff';
     terrain.texture.context.fillRect(
       0,
       Math.round(terrain.texture.height / terrain.texture.linesCount) * (i+1),
@@ -103,6 +104,7 @@ terrain.geometry = new THREE.PlaneGeometry(1,1,1000,1000);
 terrain.geometry.rotateX(-Math.PI*0.5)
 
 /* Uniforms */
+console.log(terrain.texture,1);
 terrain.uniforms = {
   uTexture:{value:terrain.texture.instance},
     uElevation:{value:0.825},

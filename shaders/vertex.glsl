@@ -1,6 +1,7 @@
 #include partials/getElevation
 
 varying float vElevation;
+varying vec2 vUv;
 // uniform float uElevation;
 uniform float uTime;
 
@@ -19,4 +20,5 @@ void main(){
     gl_Position =projectionPosition;
 
     vElevation = elevation;
+    vUv = uv;
 }
