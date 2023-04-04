@@ -83,7 +83,7 @@ terrain.texture.update()
 gui.add(terrain.texture,'linesCount').min(1).max(10).step(1).name('linesCount').onChange(()=>{
   terrain.texture.update()
 }) 
-gui.add(terrain.texture,'bigLineWidth').min(0).max(0.1).step(0.0001).name('bigLineWidth').onChange(()=>{
+gui.add(terrain.texture,'bigLineWidth').min(0).max(0.5).step(0.0001).name('bigLineWidth').onChange(()=>{
   terrain.texture.update()
 }) 
 gui.add(terrain.texture,'smallLineWidth').min(0).max(0.1).step(0.0001).name('smallLineWidth').onChange(()=>{
@@ -108,7 +108,13 @@ console.log(terrain.texture,1);
 terrain.uniforms = {
   uTexture:{value:terrain.texture.instance},
     uElevation:{value:0.825},
-    uTime:{value:0}
+    uTime:{value:0},
+    uHslHue:{value:1.0},
+    uHslHueOffset:{value:0.0},
+    uHslHueFrequency:{value:10.0},
+    uHslLightness:{value:0.75},
+    uHslLightnessVariation:{value:0.25},
+    uHslLightnessFrequency:{value:20.0}
 }
 terrain.material = new THREE.ShaderMaterial({
   transparent:true,
