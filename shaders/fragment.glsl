@@ -7,6 +7,8 @@ uniform float uHslHueFrequency;
 uniform float uHslLightness;
 uniform float uHslLightnessVariation;
 uniform float uHslLightnessFrequency;
+uniform float uHslTimeFrequency;
+uniform float uTime;
 #include partials/getPerlinNoise2d;
 vec3 hsl2rgb( in vec3 c )
 {
@@ -15,14 +17,19 @@ vec3 hsl2rgb( in vec3 c )
     return c.z + c.y * (rgb-0.5)*(1.0-abs(2.0*c.z-1.0));
 }
 vec3 getRainbowColor(){
-    float hue = uHslHueOffset+ cnoise(vUv * uHslHueFrequency) * uHslHue;
-    float lightness = uHslLightness + cnoise((vUv * uHslLightnessFrequency + 1234.5) ) * uHslLightnessVariation;
+    vec2 uv = vUv;
+    uv.y +=  uTime * uHslTimeFrequency;
+    float hue = uHslHueOffset+ cnoise(uv * uHslHueFrequency) * uHslHue;
+    float lightness = uHslLightness + cnoise((uv * uHslLightnessFrequency + 1234.5) ) * uHslLightnessVariation;
     vec3 hslColor = vec3(hue,1.0,lightness);
     vec3 rainbowColor = hsl2rgb(hslColor);
     return rainbowColor;
 }
 
 void main(){
+
+    
+
     vec3 uColor = vec3(1.,1.,1.);
  
    

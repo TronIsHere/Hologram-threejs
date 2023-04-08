@@ -112,6 +112,7 @@ terrain.uniforms = {
     uHslHue:{value:1.0},
     uHslHueOffset:{value:0.0},
     uHslHueFrequency:{value:10.0},
+    uHslTimeFrequency:{value:0.05},
     uHslLightness:{value:0.75},
     uHslLightnessVariation:{value:0.25},
     uHslLightnessFrequency:{value:20.0}
@@ -126,7 +127,24 @@ terrain.material = new THREE.ShaderMaterial({
 gui.add(terrain.material.uniforms.uElevation,'value').min(0).max(10).step(0.001).name('uElevation').onChange(()=>{
   terrain.texture.update()
 }) 
-
+gui.add(terrain.material.uniforms.uHslHue,'value').min(0).max(1).step(0.001).name('uHslHue').onChange(()=>{
+  terrain.texture.update()
+}) 
+gui.add(terrain.material.uniforms.uHslHueOffset,'value').min(0).max(1).step(0.001).name('uHslHueOffset').onChange(()=>{
+  terrain.texture.update()
+}) 
+gui.add(terrain.material.uniforms.uHslHueFrequency,'value').min(0).max(200).step(0.01).name('uHslHueFrequency').onChange(()=>{
+  terrain.texture.update()
+}) 
+gui.add(terrain.material.uniforms.uHslTimeFrequency,'value').min(0).max(1).step(0.001).name('uHslTimeFrequency').onChange(()=>{
+  terrain.texture.update()
+}) 
+gui.add(terrain.material.uniforms.uHslLightness,'value').min(0).max(1).step(0.001).name('uHslLightness').onChange(()=>{
+  terrain.texture.update()
+}) 
+gui.add(terrain.material.uniforms.uHslLightnessVariation,'value').min(0).max(1).step(0.001).name('uHslLightnessVariation').onChange(()=>{
+  terrain.texture.update()
+}) 
 /*
 
  depth Material
