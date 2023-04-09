@@ -16,7 +16,7 @@ import terrainDepthFragmentShader from "./shaders/terrainDepth/fragment.glsl"
 // Debug
 const gui = new dat.GUI();
 const guiDummy = {}
-guiDummy.clearColor = '#080024'
+guiDummy.clearColor = '#08021e'
 
 // Canvas
 const canvas = document.querySelector("canvas.webgl");
